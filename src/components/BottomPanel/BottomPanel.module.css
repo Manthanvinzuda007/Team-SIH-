@@ -1,0 +1,269 @@
+.bottomPanel {
+  height: 100%;
+  display: flex;
+  background: #070c14;
+  font-family: 'Courier New', Courier, monospace;
+  overflow: hidden;
+}
+
+.section {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border-right: 1px solid #0d1e30;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.section:last-child { border-right: none; }
+
+.section::-webkit-scrollbar { width: 3px; }
+.section::-webkit-scrollbar-thumb { background: #1e3a5f; }
+
+.sectionTitle {
+  margin: 0 0 8px;
+  padding-bottom: 6px;
+  font-size: 9px;
+  font-weight: normal;
+  letter-spacing: 2px;
+  color: #2a4060;
+  border-bottom: 1px solid #0d1e30;
+  text-transform: uppercase;
+}
+
+.sectionSub {
+  letter-spacing: 0;
+  color: #1a2a3a;
+}
+
+.forecastGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  flex: 1;
+}
+
+.forecastCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.forecastCell:hover { background: #0b1a2a; }
+.forecastCellActive { border-color: #397495; background: #0d2234; }
+
+.forecastThumb {
+  width: 100%;
+  height: 80px;
+  overflow: hidden;
+  border: 1px solid #0d1e30;
+}
+
+
+
+.forecastLabel {
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #4a6080;
+}
+
+.forecastIssued {
+  font-size: 7px;
+  line-height: 1.3;
+  color: #2a3a4a;
+  text-align: center;
+}
+
+.uncertaintyRow {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 6px;
+  border-top: 1px solid #0d1e30;
+  font-size: 8px;
+  color: #2a3a4a;
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 5px 0;
+  border-bottom: 1px solid #0a1628;
+}
+
+.statSubRow {
+  padding: 0 0 5px;
+  font-size: 8px;
+  color: #2a3a4a;
+}
+
+.statLabel {
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #2a4060;
+  text-transform: uppercase;
+}
+
+.statValue {
+  font-size: 12px;
+  color: #6a8aaa;
+}
+
+.statValueLarge {
+  font-size: 16px;
+  color: #8aa0b8;
+}
+
+.footerNote {
+  margin-top: auto;
+  padding-top: 6px;
+  font-size: 7px;
+  line-height: 1.4;
+  color: #1a2a3a;
+}
+
+.riskScore {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid #0d1e30;
+}
+
+.riskBarRow { margin-bottom: 10px; }
+
+.riskBarHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3px;
+  font-size: 8px;
+  letter-spacing: 0.5px;
+  color: #2a4060;
+  text-transform: uppercase;
+}
+
+.riskBarTrack {
+  height: 4px;
+  background: #060c14;
+  border: 1px solid #0d1e30;
+  overflow: hidden;
+}
+
+.riskBarFill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.textInput,
+.selectInput {
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 5px;
+  padding: 5px 8px;
+  background: #060c14;
+  border: 1px solid #0d1e30;
+  color: #6a8aaa;
+  font-family: inherit;
+  font-size: 9px;
+  outline: none;
+}
+
+.textInput::placeholder { color: #1a2a3a; }
+
+.selectInput {
+  appearance: none;
+  cursor: pointer;
+}
+
+.miniFieldRow {
+  display: flex;
+  justify-content: space-between;
+  margin: 3px 0 8px;
+  font-size: 8px;
+  color: #2a4060;
+}
+
+.miniFieldRow b {
+  color: #6a8aaa;
+  font-weight: normal;
+}
+
+.weightingRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.weightingLabelLeft,
+.weightingLabelRight {
+  flex-shrink: 0;
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: #1a2a3a;
+  text-transform: uppercase;
+}
+
+.slider {
+  flex: 1;
+  height: 3px;
+  accent-color: #1e3a5f;
+  cursor: pointer;
+}
+
+.computeBtn {
+  width: 100%;
+  padding: 7px;
+  background: #0d1e30;
+  border: 1px solid #1e3a5f;
+  color: #4a7aaf;
+  font-family: inherit;
+  font-size: 9px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-transform: uppercase;
+}
+
+.computeBtn:hover {
+  background: #142338;
+  color: #6a9abf;
+}
+
+.computedNote {
+  margin-top: 6px;
+  font-size: 7px;
+  color: #1a2a3a;
+  text-align: center;
+}
+/* replace with: */
+.sectionWide {
+  flex: 2;
+}
+
+.sectionRoutePlanner {
+  flex: 1.4;
+}
+
+@media (max-width: 850px) {
+  .bottomPanel { display: grid; grid-template-columns: 1fr; height: auto; min-width: 0; overflow-y: auto; }
+  .section, .sectionWide { min-height: 230px; padding: 12px; border-right: none; border-bottom: 1px solid #0d1e30; }
+  .sectionWide { min-height: 255px; }
+  .forecastGrid { gap: 8px; }
+}
+
+@media (max-width: 560px) {
+  .section, .sectionWide { min-height: 220px; padding: 10px; }
+  .forecastGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .forecastCell { min-height: 150px; }
+  .forecastThumb { max-height: 108px; }
+}

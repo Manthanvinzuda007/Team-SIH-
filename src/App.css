@@ -1,0 +1,62 @@
+.root {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #060d1a;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.topbar {
+  flex-shrink: 0;
+  height: 48px;
+  z-index: 10;
+}
+
+.middle {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.left {
+  width: 220px;
+  min-width: 220px;
+  flex-shrink: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.map {
+  flex: 1;
+  height: 100%;
+  background: #060d1a;
+  position: relative;
+  overflow: hidden;
+}
+
+.right {
+  width: 320px;
+  min-width: 320px;
+  flex-shrink: 0;
+  height: 100%;
+  background: #070c14;
+  border-left: 1px solid #0d1e30;
+  overflow: hidden;
+}
+
+.bottom {
+  flex-shrink: 0;
+  height: 200px;
+  border-top: 1px solid #0d1e30;
+  overflow: hidden;
+}
+
+.time {
+  flex-shrink: 0;
+  height: 60px;
+  border-top: 1px solid #0d1e30;
+  overflow: hidden;
+}

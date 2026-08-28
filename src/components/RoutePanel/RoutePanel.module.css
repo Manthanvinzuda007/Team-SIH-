@@ -1,0 +1,246 @@
+.panel {
+  width: 100%;
+  height: 100%;
+  background: #070c14;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.panel::-webkit-scrollbar { width: 3px; }
+.panel::-webkit-scrollbar-thumb { background: #0d1e30; }
+
+.section {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  flex: none;
+}
+
+.sectionHeader {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: #4a7aaa;
+  padding: 0 12px 6px;
+  text-transform: uppercase;
+  font-weight: bold;
+  flex-shrink: 0;
+  border-bottom: 1px solid #0d1e30;
+  margin-bottom: 4px;
+}
+
+.divider {
+  height: 1px;
+  background: #0a1628;
+  flex-shrink: 0;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 200px;
+}
+
+.tableWrap::-webkit-scrollbar { width: 3px; height: 3px; }
+.tableWrap::-webkit-scrollbar-thumb { background: #0d1e30; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+
+.th {
+  padding: 4px 4px;
+  font-size: 7px;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  color: #2a5080;
+  text-transform: uppercase;
+  text-align: left;
+  border-bottom: 1px solid #0d1e30;
+  white-space: nowrap;
+  background: #070c14;
+  position: sticky;
+  top: 0;
+}
+
+.td {
+  padding: 5px 4px;
+  font-size: 9px;
+  color: #6a8aaa;
+  border-bottom: 1px solid #090e18;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.tdSmall {
+  padding: 3px 5px;
+  font-size: 7px;
+  color: #3a5070;
+  border-bottom: 1px solid #090e18;
+  line-height: 1.4;
+  vertical-align: middle;
+}
+
+.tdRisk {
+  padding: 5px 5px;
+  font-size: 9px;
+  font-weight: bold;
+  border-bottom: 1px solid #090e18;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.tableRow {
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: background 0.1s;
+}
+
+.tableRow:hover { background: #0a1420; }
+.tableRowActive { background: #0a1628; }
+.tableRowUnconfirmed { background: #0e0808; }
+
+.routeTypeCell {
+  padding: 5px 4px;
+  font-size: 8px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #090e18;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.unconfirmedBadge {
+  font-size: 6px;
+  color: #6a2020;
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+  display: block;
+}
+
+.detailPanel {
+  border-top: 1px solid #0a1628;
+  padding: 8px 12px 2px;
+  flex-shrink: 0;
+}
+
+.detailHeader {
+  font-size: 7px;
+  letter-spacing: 2px;
+  color: #2a4060;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.detailBody {
+  display: flex;
+  gap: 8px;
+}
+
+.detailChart { flex: 1; min-width: 0; }
+
+.chartLegend {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.legendHistorical,
+.legendPredicted {
+  font-size: 6px;
+  color: #2a4060;
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 6px;
+  align-content: start;
+  flex-shrink: 0;
+}
+
+.detailLabel {
+  font-size: 6px;
+  color: #1e3050;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  align-self: center;
+}
+
+.detailValue {
+  font-size: 8px;
+  color: #4a6a8a;
+}
+
+/* ── Why This Route ─────────────────────────────────────────── */
+
+.whySection {
+  padding: 10px 0 14px;
+  flex: 1;
+  min-height: 0;
+  border-top: 1px solid #0d1e30;
+}
+
+.whyBody { padding: 0 12px; }
+
+.whyNote {
+  font-size: 8px;
+  color: #3a5070;
+  margin: 0 0 10px;
+  font-style: italic;
+}
+
+.whyRow {
+  margin-bottom: 10px;
+}
+
+.whyRow:last-child {
+  margin-bottom: 0;
+}
+
+.whyRowHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.whyGreek {
+  font-size: 13px;
+  color: #4a7aaa;
+  font-style: italic;
+  font-family: Georgia, 'Times New Roman', serif;
+  width: 14px;
+  flex-shrink: 0;
+}
+
+.whyLabel {
+  font-size: 9px;
+  color: #6a8aaa;
+  letter-spacing: 0.5px;
+  flex: 1;
+}
+
+.whyVal {
+  font-size: 9px;
+  color: #6a8aaa;
+  font-weight: bold;
+}
+
+.whyBarTrack {
+  height: 4px;
+  border-radius: 2px;
+  background: #0a1420;
+  border: 1px solid #0d1e30;
+  overflow: hidden;
+}
+
+.whyBarFill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}

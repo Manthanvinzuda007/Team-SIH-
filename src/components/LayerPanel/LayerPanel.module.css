@@ -1,0 +1,304 @@
+/* ─── Panel ────────────────────────────────────────────────────────────────── */
+.panel {
+  width: 220px;
+  min-width: 220px;
+  height: 100%;
+  background: #070c14;
+  border-right: 1px solid #0d1e30;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* ─── Section ──────────────────────────────────────────────────────────────── */
+.section {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0 6px;
+}
+
+.sectionHeader {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: #2a4060;
+  padding: 0 12px 6px;
+  text-transform: uppercase;
+  font-weight: normal;
+}
+
+.divider {
+  height: 1px;
+  background: #0a1628;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+/* ─── Layer List ───────────────────────────────────────────────────────────── */
+.layerList {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 240px;
+}
+
+.layerList::-webkit-scrollbar {
+  width: 3px;
+}
+.layerList::-webkit-scrollbar-track {
+  background: #070c14;
+}
+.layerList::-webkit-scrollbar-thumb {
+  background: #0d1e30;
+}
+
+/* ─── Layer Row ────────────────────────────────────────────────────────────── */
+.layerRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 5px 12px;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: background .14s, border-color .14s, transform .14s;
+}
+
+.layerRow:hover {
+  background: #0a1628;
+  border-left-color: #3c7a9c;
+}
+
+.layerRowActive {
+  border-left: 2px solid #1e3a5f;
+}
+
+/* ─── Checkbox ─────────────────────────────────────────────────────────────── */
+.checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  min-width: 15px;
+  border: 1px solid #1e3050;
+  background: transparent;
+  margin-top: 2px;
+  position: relative;
+  pointer-events: none; /* the whole .layerRow handles clicks now — this is display-only */
+}
+
+.checkbox:checked {
+  background: #1e3a5f;
+  border-color: #2a5080;
+}
+
+.checkbox:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border-right: 1px solid #6a9abf;
+  border-bottom: 1px solid #6a9abf;
+  transform: rotate(45deg);
+}
+
+.layerRow:focus-visible {
+  outline: 1px solid #3c7a9c;
+  outline-offset: -1px;
+}
+
+/* ─── Layer Text ───────────────────────────────────────────────────────────── */
+.layerText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.layerLabel {
+  font-size: 12px;
+  color: #4a6080;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.1s;
+}
+
+.layerLabelActive {
+  color: #7a9ab8;
+}
+
+.layerMeta {
+  font-size: 10px;
+  color: #2a4060;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ─── Spinner ──────────────────────────────────────────────────────────────── */
+.spinner {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border: 1px solid #1e3050;
+  border-top-color: #2a5080;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Error Dot ────────────────────────────────────────────────────────────── */
+.errorDot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #5a2020;
+}
+
+/* ─── Layer Info ───────────────────────────────────────────────────────────── */
+.infoSection {
+  padding: 10px 0 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.infoName {
+  font-size: 11px;
+  color: #8aa0b8;
+  padding: 0 12px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+  padding: 0 12px;
+}
+
+.infoLabel {
+  font-size: 8px;
+  color: #2a4060;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  align-self: center;
+}
+
+.infoValue {
+  font-size: 10px;
+  color: #6a8aaa;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* ─── Badge ────────────────────────────────────────────────────────────────── */
+.badge {
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  padding: 2px 5px;
+  border-radius: 2px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.badgeCurrent {
+  background: #0a1e0a;
+  border: 1px solid #1a3a1a;
+  color: #4a8a4a;
+}
+
+.badgeStale {
+  background: #1e1a0a;
+  border: 1px solid #3a300a;
+  color: #8a7a2a;
+}
+
+.badgeUnavailable {
+  background: #1e0a0a;
+  border: 1px solid #3a1010;
+  color: #8a3030;
+}
+
+/* ─── Warnings ─────────────────────────────────────────────────────────────── */
+.warnList {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.warnList::-webkit-scrollbar {
+  width: 3px;
+}
+.warnList::-webkit-scrollbar-track {
+  background: #070c14;
+}
+.warnList::-webkit-scrollbar-thumb {
+  background: #0d1e30;
+}
+
+.warnRow {
+  padding: 6px 12px 6px 10px;
+  border-left: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.warnRowWarning {
+  border-left-color: #5a4a10;
+  background: #0e0c04;
+}
+
+.warnRowError {
+  border-left-color: #5a1010;
+  background: #0e0404;
+}
+
+.warnRowInfo {
+  border-left-color: #10305a;
+  background: #04080e;
+}
+
+.warnTitle {
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: normal;
+}
+
+.warnTitleWarning { color: #6a5a20; }
+.warnTitleError   { color: #6a2020; }
+.warnTitleInfo    { color: #204060; }
+
+.warnMessage {
+  font-size: 9px;
+  color: #2a3a2a;
+  line-height: 1.4;
+}
+
+.warnRowError .warnMessage { color: #3a1010; }
+.warnRowInfo .warnMessage  { color: #102030; }
+
+.warnTime {
+  font-size: 8px;
+  color: #1a2a3a;
+  text-align: right;
+  margin-top: 2px;
+}
+
+@media (max-width: 850px) {
+  .panel { width: 100%; min-width: 0; }
+  .layerList { max-height: none; }
+  .layerRow { padding: 9px 14px; }
+  .sectionHeader { padding-top: 3px; }
+}

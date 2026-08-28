@@ -1,0 +1,171 @@
+.timeController {
+  height: 72px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+  background: #0a1420;
+  border-top: 1px solid #1e3a5f;
+  font-family: 'Consolas', 'SF Mono', 'Courier New', monospace;
+}
+
+.transportControls {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 4px;
+}
+
+.iconBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: #0d1a2b;
+  border: 1px solid #1e3a5f;
+  border-radius: 3px;
+  color: #8fa5bf;
+  cursor: pointer;
+}
+
+.iconBtn:hover {
+  background: #142338;
+  color: #d5e2ef;
+}
+
+.iconBtnPrimary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: #2a5a8f;
+  border: none;
+  border-radius: 3px;
+  color: #eaf2fa;
+  cursor: pointer;
+}
+
+.iconBtnPrimary:hover {
+  background: #336aa5;
+}
+
+.speedBtn {
+  padding: 5px 8px;
+  background: #0d1a2b;
+  border: 1px solid #1e3a5f;
+  border-radius: 3px;
+  color: #8fa5bf;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.speedBtn:hover {
+  color: #d5e2ef;
+}
+
+.timeline {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: stretch;
+  height: 44px;
+  gap: 2px;
+}
+
+.slot {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  margin-top: -1px;
+  padding: 6px 2px 0;
+  background: none;
+  border: none;
+  border-top: 2px solid transparent;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.slot:hover {
+  background: rgba(30, 58, 95, 0.2);
+}
+
+.slotActive {
+  background: rgba(74, 157, 111, 0.08);
+  border-top-color: #4a9d6f;
+}
+
+.slotActive::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4a9d6f;
+  box-shadow: 0 0 4px rgba(74, 157, 111, 0.8);
+  transform: translateX(-50%);
+}
+
+.slotLabel {
+  font-size: 9px;
+  letter-spacing: 0.3px;
+  color: #b0c4d8;
+  white-space: nowrap;
+}
+
+.slotSublabel {
+  font-size: 8px;
+  color: #5b7690;
+}
+
+.slotStatus {
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.slotAvailable {
+  color: #4a9d6f;
+}
+
+.slotUnavailable {
+  color: #c9453b;
+}
+
+.nowBtn {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  background: #2a5a8f;
+  border: none;
+  border-radius: 3px;
+  color: #eaf2fa;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.nowBtn:hover {
+  background: #336aa5;
+}
+
+@media (max-width: 850px) {
+.timeController { height: 64px; padding: 0 8px; gap: 8px; }
+.timeline { overflow-x: auto; gap: 8px; }
+.slot { min-width: 95px; }
+.slotLabel { font-size: 8px; }
+.nowBtn { padding: 8px 9px; }
+}

@@ -1,0 +1,155 @@
+.root {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #060d1a;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.topbar {
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+/* middle = <div> wrapping <aside left> + <div dashboardGrid> */
+.middle {
+  position: relative; /* anchors the mobile overlay panels below */
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.left {
+  width: 220px;
+  min-width: 220px;
+  flex-shrink: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* dashboardGrid = <div> wrapping <main map> + <aside right> + <section bottom> */
+.dashboardGrid {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-rows: minmax(0, 1fr) 200px;
+  grid-template-areas:
+    "map   right"
+    "bottom right";
+  overflow: hidden;
+}
+
+.map {
+  grid-area: map;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: #060d1a;
+}
+
+.right {
+  grid-area: right;
+  min-width: 0;
+  min-height: 0;
+  background: #070c14;
+  border-left: 1px solid #0d1e30;
+  overflow: hidden;
+}
+
+.bottom {
+  grid-area: bottom;
+  min-width: 0;
+  min-height: 0;
+  border-top: 1px solid #0d1e30;
+  overflow: hidden;
+}
+
+.time {
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.mobileControls {
+  display: none;
+}
+
+/* ============================================================
+   TABLET / MOBILE — left/right become slide-in overlays
+   anchored to .middle (positioned above), bottom row is dropped.
+============================================================ */
+@media (max-width: 900px) {
+  .middle {
+    display: block;
+  }
+
+  .left,
+  .right {
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 100;
+    border: none;
+  }
+
+  .left {
+    left: 0;
+    width: min(300px, 85vw);
+  }
+
+  .right {
+    right: 0;
+    width: min(370px, 90vw);
+  }
+
+  .left.mobilePanelOpen,
+  .right.mobilePanelOpen {
+    display: block;
+  }
+
+  .dashboardGrid {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .bottom {
+    display: none;
+  }
+
+  .map {
+    width: 100%;
+    height: 100%;
+  }
+
+  .mobileControls {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    display: flex;
+    gap: 6px;
+    z-index: 30;
+  }
+
+  .mobileControls button {
+    padding: 7px 10px;
+    background: rgba(7, 16, 25, 0.94);
+    border: 1px solid #304b61;
+    color: #dce8f0;
+    font-family: inherit;
+    font-size: 9px;
+    letter-spacing: 1px;
+    cursor: pointer;
+  }
+
+  .mobileControls button:hover {
+    background: #102333;
+    border-color: #6a91ad;
+  }
+}
