@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-300 font-sans antialiased overflow-hidden;
+  }
+}
+
+.leaflet-container {
+  background: #0f172a; /* tailwind slate-900 */
+}
+
+html, body, #root {
+  height: 100vh;
+  width: 100vw;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.font-sans {
+  font-family: 'Inter', sans-serif;
+}
