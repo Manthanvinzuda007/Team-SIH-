@@ -22,4 +22,4 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-.polaris.db
+polaris.db
