@@ -1,0 +1,35 @@
+{
+  "n_tracks_total_usable": 583,
+  "n_train_icebergs": 496,
+  "n_test_icebergs": 87,
+  "holdout_frac": 0.15,
+  "split": "hold out icebergs (not points within a track)",
+  "n_lstm_windows": 4000,
+  "lstm_loss_last": 0.011175395893942263,
+  "n_eval_samples": 23395,
+  "ADE_km": {
+    "1d": {
+      "baseline_persistence_velocity": 3.6973298595639315,
+      "lstm": 3.8632930601510505
+    },
+    "3d": {
+      "baseline_persistence_velocity": 10.382820629919385,
+      "lstm": 10.33604599079982
+    },
+    "7d": {
+      "baseline_persistence_velocity": 24.9104294717883,
+      "lstm": 22.649173769650808
+    }
+  },
+  "FDE_km": {
+    "note": "Single-horizon displacement; ADE at horizon h equals FDE for that h (one-step-ahead rollout of h days).",
+    "1d": 3.8632930601510505,
+    "3d": 10.33604599079982,
+    "7d": 22.649173769650808,
+    "baseline_1d": 3.6973298595639315,
+    "baseline_3d": 10.382820629919385,
+    "baseline_7d": 24.9104294717883
+  },
+  "units": "km haversine vs actual BYU position on held-out icebergs",
+  "trained": true
+}
