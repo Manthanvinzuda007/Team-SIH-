@@ -5,8 +5,8 @@
   align-items: center;
   gap: 16px;
   padding: 0 16px;
-  background: #0a1420;
-  border-top: 1px solid #1e3a5f;
+  background: #07101a;
+  border-top: 1px solid #0f2035;
   font-family: 'Consolas', 'SF Mono', 'Courier New', monospace;
 }
 
@@ -23,10 +23,10 @@
   justify-content: center;
   width: 28px;
   height: 28px;
-  background: #0d1a2b;
-  border: 1px solid #1e3a5f;
+  background: #050d18;
+  border: 1px solid #0f2035;
   border-radius: 3px;
-  color: #8fa5bf;
+  color: #4a6a7a;
   cursor: pointer;
 }
 
@@ -41,10 +41,10 @@
   justify-content: center;
   width: 30px;
   height: 30px;
-  background: #2a5a8f;
+  background: #0d2035;
   border: none;
   border-radius: 3px;
-  color: #eaf2fa;
+  color: #6a9abf;
   cursor: pointer;
 }
 
@@ -54,10 +54,10 @@
 
 .speedBtn {
   padding: 5px 8px;
-  background: #0d1a2b;
-  border: 1px solid #1e3a5f;
+  background: #050d18;
+  border: 1px solid #0f2035;
   border-radius: 3px;
-  color: #8fa5bf;
+  color: #4a6a7a;
   font-family: inherit;
   font-size: 10px;
   font-weight: 600;
@@ -101,8 +101,8 @@
 }
 
 .slotActive {
-  background: rgba(74, 157, 111, 0.08);
-  border-top-color: #4a9d6f;
+  background: rgba(58, 122, 90, 0.08);
+  border-top-color: #3a7a5a;
 }
 
 .slotActive::after {
@@ -113,15 +113,15 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #4a9d6f;
-  box-shadow: 0 0 4px rgba(74, 157, 111, 0.8);
+  background: #3a9a5a;
+  box-shadow: 0 0 4px rgba(58, 154, 90, 0.8);
   transform: translateX(-50%);
 }
 
 .slotLabel {
   font-size: 9px;
   letter-spacing: 0.3px;
-  color: #b0c4d8;
+  color: #5a7890;
   white-space: nowrap;
 }
 
@@ -137,20 +137,20 @@
 }
 
 .slotAvailable {
-  color: #4a9d6f;
+  color: #2a6a3a;
 }
 
 .slotUnavailable {
-  color: #c9453b;
+  color: #7a2020;
 }
 
 .nowBtn {
   flex-shrink: 0;
   padding: 8px 14px;
-  background: #2a5a8f;
-  border: none;
+  background: #0d2035;
+  border: 1px solid #1e3a5f;
   border-radius: 3px;
-  color: #eaf2fa;
+  color: #6a9abf;
   font-family: inherit;
   font-size: 10px;
   font-weight: 700;

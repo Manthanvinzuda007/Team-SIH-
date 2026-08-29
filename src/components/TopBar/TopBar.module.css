@@ -1,13 +1,12 @@
 .bar {
-  --hud-bg: #0a0e14;
+  --hud-bg: #060d1a;
   --hud-text: #f4f7fb;
   --hud-muted: #7a8c99;
-  --hud-line: #1e3a5f;
+  --hud-line: #0f2035;
   --hud-ok: #3dff7a;
   --hud-stale: #e6b84d;
   --hud-none: #8a97a6;
-  --hud-font: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', 'Roboto Mono',
-    Consolas, monospace;
+  --hud-font: 'Courier New', Courier, monospace;
 
   box-sizing: border-box;
   display: flex;
@@ -18,7 +17,7 @@
   min-height: 64px;
   padding: 10px 18px;
   background: var(--hud-bg);
-  border-bottom: 1px solid var(--hud-line);
+  border-bottom: 1px solid #0f2035;
   color: var(--hud-text);
   font-family: var(--hud-font);
   font-size: 13px;
@@ -30,8 +29,9 @@
 
 .label {
   display: block;
-  color: var(--hud-muted);
-  font-size: 10px;
+  color: #2a4060;
+  font-size: 8px;
+  letter-spacing: 2px;
   font-weight: 500;
   letter-spacing: 0.14em;
   line-height: 1.2;
@@ -39,9 +39,9 @@
 }
 
 .value {
-  color: var(--hud-text);
-  font-size: 13px;
-  font-weight: 600;
+  color: #9abcd0;
+  font-size: 14px;
+  font-weight: normal;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
   line-height: 1.25;
@@ -64,38 +64,38 @@
 }
 
 .brandTitle {
-  color: #fff;
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: 0.22em;
+  color: #c8dce8;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 3px;
   line-height: 1;
 }
 
 .brandSub {
-  color: var(--hud-muted);
-  font-size: 9px;
-  font-weight: 500;
-  letter-spacing: 0.22em;
+  color: #2a4060;
+  font-size: 8px;
+  font-weight: normal;
+  letter-spacing: 2px;
 }
 
 .divider {
   width: 1px;
   height: 32px;
-  background: #3d4d5c;
+  background: #0f2035;
   flex-shrink: 0;
 }
 
 .vesselName {
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
+  color: #a0bcd0;
+  font-size: 13px;
+  font-weight: normal;
   letter-spacing: 0.12em;
   line-height: 1.1;
 }
 
 .iceClass {
-  color: var(--hud-muted);
-  font-size: 11px;
+  color: #3a5060;
+  font-size: 10px;
   letter-spacing: 0.06em;
 }
 
@@ -114,9 +114,10 @@
 }
 
 .coordValue {
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 600;
+  color: #9abcd0;
+  font-size: 11px;
+  font-weight: normal;
+  font-family: 'Courier New', monospace;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
   line-height: 1.25;
@@ -138,9 +139,9 @@
 }
 
 .time {
-  color: #fff;
-  font-size: 20px;
-  font-weight: 700;
+  color: #c8dce8;
+  font-size: 18px;
+  font-weight: bold;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.08em;
   line-height: 1;
@@ -169,7 +170,8 @@
 }
 
 .freshCurrent {
-  color: var(--hud-ok);
+  color: #3a7a3a;
+  font-size: 10px;
 }
 
 .freshStale {
@@ -181,11 +183,12 @@
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: currentColor;
-  box-shadow: 0 0 6px currentColor;
+  background: #3a9a3a;
+  box-shadow: none;
   flex-shrink: 0;
 }
 
@@ -202,11 +205,10 @@
   0%,
   100% {
     opacity: 1;
-    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(58,154,58,0.4);
   }
   50% {
-    opacity: 0.4;
-    transform: scale(0.82);
+    box-shadow: 0 0 0 6px rgba(58,154,58,0);
   }
 }
 
@@ -216,17 +218,22 @@
   gap: 5px;
   min-width: 0;
 }
+.sources .label {
+  color: #1e3040;
+  font-size: 8px;
+}
 
 .sourceGrid {
-  display: grid;
+  color: #2a4060;
+  font-size: 9px;
+display: grid;
   grid-template-columns: repeat(3, max-content);
   column-gap: 14px;
   row-gap: 2px;
   margin: 0;
   padding: 0;
   list-style: none;
-  color: #c5d0d8;
-  font-size: 11px;
+  
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
 }
@@ -238,9 +245,9 @@
   margin: 0;
   padding: 7px 12px;
   flex-shrink: 0;
-  background: transparent;
-  border: 1px solid #6b7784;
-  color: #fff;
+  background: #070c14;
+  border: 1px solid #1a3050;
+  color: #3a5060;
   cursor: pointer;
   font: inherit;
   font-size: 12px;

@@ -84,14 +84,14 @@ export const MOCK_ICEBERG_DETAIL: IcebergDetail = {
 // ─── Route colour map ─────────────────────────────────────────────────────────
 const ROUTE_COLOR: Record<RouteType, string> = {
   FASTEST: '#8a6a10',
-  SAFEST: '#2a6a3a',
-  BALANCED: '#4a5a6a',
+  SAFEST: '#1a5a2a',
+  BALANCED: '#3a4a5a',
 }
 
 const ROUTE_ACTIVE_COLOR: Record<RouteType, string> = {
   FASTEST: '#c9a030',
-  SAFEST: '#4a9d6f',
-  BALANCED: '#8aa0b8',
+  SAFEST: '#3a9a4a',
+  BALANCED: '#7a8a9a',
 }
 
 // ─── Sub: Route Row ───────────────────────────────────────────────────────────
@@ -116,7 +116,7 @@ const RouteRowItem = memo(({ row, isSelected, onSelect }: RouteRowItemProps) => 
       <td className={styles.td}>{row.etaUtc ?? '—'}</td>
       <td className={styles.td}>{row.fuelT ?? '—'}</td>
       <td className={styles.td}>{row.iceEncounters ?? '—'}</td>
-      <td className={styles.tdRisk} style={{ color: row.riskScore !== null && row.riskScore > 50 ? '#8a3030' : '#4a8a4a' }}>
+      <td className={styles.tdRisk} style={{ color: row.riskScore !== null ? (row.riskScore > 60 ? '#8a2020' : row.riskScore > 30 ? '#8a6020' : '#3a8a3a') : '#5a7a8a' }}>
         {row.riskScore ?? '—'}
       </td>
     </tr>
@@ -210,9 +210,9 @@ const WhyThisRoute = memo(({ alpha, beta, gamma }: { alpha: number | null; beta:
   const hasWeights = alpha !== null && beta !== null && gamma !== null
 
   const weights: WeightDef[] = [
-    { greek: 'α', label: 'Risk', value: alpha, color: '#8a3030' },
-    { greek: 'β', label: 'Fuel', value: beta, color: '#8a6a10' },
-    { greek: 'γ', label: 'Distance', value: gamma, color: '#2a5080' },
+    { greek: 'α', label: 'Risk', value: alpha, color: '#8a2020' },
+    { greek: 'β', label: 'Fuel', value: beta, color: '#8a6020' },
+    { greek: 'γ', label: 'Distance', value: gamma, color: '#2a5a8a' },
   ]
 
   return (

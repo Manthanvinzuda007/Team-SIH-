@@ -1,2 +1,6 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { overflow: hidden; background: #060d1a; }
+body {
+  overflow: hidden;
+  background: #060d1a;
+  font-family: 'Courier New', Courier, monospace;
+}

@@ -4,7 +4,7 @@
   min-width: 220px;
   height: 100%;
   background: #070c14;
-  border-right: 1px solid #0d1e30;
+  border-right: 1px solid #0f2035;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -21,7 +21,7 @@
 .sectionHeader {
   font-size: 9px;
   letter-spacing: 3px;
-  color: #2a4060;
+  color: #4a7090;
   padding: 0 12px 6px;
   text-transform: uppercase;
   font-weight: normal;
@@ -69,7 +69,7 @@
 }
 
 .layerRowActive {
-  border-left: 2px solid #1e3a5f;
+  border-left: 2px solid #2a5070;
 }
 
 /* ─── Checkbox ─────────────────────────────────────────────────────────────── */
@@ -79,7 +79,7 @@
   width: 15px;
   height: 15px;
   min-width: 15px;
-  border: 1px solid #1e3050;
+  border: 1px solid #1a3045;
   background: transparent;
   margin-top: 2px;
   position: relative;
@@ -87,8 +87,8 @@
 }
 
 .checkbox:checked {
-  background: #1e3a5f;
-  border-color: #2a5080;
+  background: #1e3a55;
+  border-color: #1a3045;
 }
 
 .checkbox:checked::after {
@@ -118,7 +118,7 @@
 
 .layerLabel {
   font-size: 12px;
-  color: #4a6080;
+  color: #3a5060;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -126,12 +126,12 @@
 }
 
 .layerLabelActive {
-  color: #7a9ab8;
+  color: #9abcd0;
 }
 
 .layerMeta {
   font-size: 10px;
-  color: #2a4060;
+  color: #1e3040;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -142,7 +142,7 @@
   display: inline-block;
   width: 8px;
   height: 8px;
-  border: 1px solid #1e3050;
+  border: 1px solid #1a3045;
   border-top-color: #2a5080;
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -186,8 +186,9 @@
 }
 
 .infoLabel {
-  font-size: 8px;
-  color: #2a4060;
+  font-size: 7px;
+  color: #1e3040;
+  text-transform: uppercase;
   letter-spacing: 1px;
   text-transform: uppercase;
   align-self: center;
@@ -195,7 +196,7 @@
 
 .infoValue {
   font-size: 10px;
-  color: #6a8aaa;
+  color: #7a9ab0;
   font-family: 'Courier New', Courier, monospace;
 }
 
@@ -276,9 +277,9 @@
   font-weight: normal;
 }
 
-.warnTitleWarning { color: #6a5a20; }
-.warnTitleError   { color: #6a2020; }
-.warnTitleInfo    { color: #204060; }
+.warnTitleWarning { color: #7a6020; }
+.warnTitleError   { color: #7a2020; }
+.warnTitleInfo    { color: #203050; }
 
 .warnMessage {
   font-size: 9px;

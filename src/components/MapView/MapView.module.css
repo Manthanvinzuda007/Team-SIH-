@@ -1,16 +1,17 @@
+/* stylelint-disable */
 .mapWrapper {
   position: relative;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #0f172a 0%, #050a12 100%);
+  background: #060d1a;
   overflow: hidden;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
 }
 
 .mapContainer {
   width: 100%;
   height: 100%;
-  background: #0a0e17;
+  background: #060d1a;
 }
 
 .offlineBadge {
@@ -21,7 +22,7 @@
   background: rgba(7, 12, 20, 0.92);
   border: 1px solid #1e3a5f;
   color: #06b6d4;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 11px;
   letter-spacing: 1.5px;
   padding: 6px 14px;
@@ -39,7 +40,7 @@
   flex-direction: column;
   align-items: center;
   color: #6a8aaa;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 11px;
   z-index: 5;
   pointer-events: none;
@@ -56,7 +57,7 @@
 }
 
 .compassArrow::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -5px;
   left: -3.5px;
@@ -73,7 +74,7 @@
   background: rgba(7, 12, 20, 0.92);
   border: 1px solid #0d1e30;
   padding: 10px 12px;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 10px;
   color: #6a8aaa;
   z-index: 5;
@@ -101,20 +102,19 @@
 }
 
 .legendSwatchFastest {
-  background: #fbbf24;
-  box-shadow: 0 0 3px rgba(251, 191, 36, 0.5);
+  background: #f5a623;
+  box-shadow: 0 0 3px rgba(245, 166, 35, 0.5);
 }
 
 .legendSwatchSafest {
-  background: repeating-linear-gradient(90deg, #22c55e 0 4px, transparent 4px 7px);
-  box-shadow: 0 0 3px rgba(34, 197, 94, 0.3);
+  background: repeating-linear-gradient(to right, #27ae60 0 4px, transparent 4px 7px);
+  box-shadow: 0 0 3px rgba(39, 174, 96, 0.3);
 }
 
 .legendSwatchBalanced {
-  background: repeating-linear-gradient(90deg, #64748b 0 4px, transparent 4px 7px);
+  background: repeating-linear-gradient(to right, #bdc3c7 0 4px, transparent 4px 7px);
 }
 
-/* OpenLayers Control Styling */
 .mapWrapper :global(.ol-zoom) {
   top: auto;
   bottom: 14px;
@@ -127,7 +127,7 @@
   background: rgba(7, 12, 20, 0.92);
   border: 1px solid #0d1e30;
   color: #6a8aaa;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 12px;
   border-radius: 0;
   width: 32px;
@@ -158,14 +158,14 @@
   border-radius: 0;
   bottom: 14px;
   left: 50px;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 10px;
 }
 
 .mapWrapper :global(.ol-scale-line-inner) {
   color: #6a8aaa;
   border-color: #6a8aaa;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   font-size: 10px;
   letter-spacing: 0.5px;
 }
@@ -173,7 +173,7 @@
 .mapWrapper :global(.ol-attribution) {
   background: rgba(7, 12, 20, 0.7);
   font-size: 9px;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
   color: #4a6a8a;
   bottom: auto;
   right: auto;
@@ -192,7 +192,6 @@
   text-decoration: underline;
 }
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
   .legend {
     font-size: 9px;
@@ -220,7 +219,6 @@
   }
 }
 
-/* Touch Device Support */
 @media (hover: none) and (pointer: coarse) {
   .mapWrapper :global(.ol-zoom button:hover) {
     background: rgba(7, 12, 20, 0.92);
@@ -234,7 +232,6 @@
   }
 }
 
-/* Accessibility */
 .mapWrapper :global(.ol-zoom button:focus) {
   outline: 2px solid #06b6d4;
   outline-offset: 2px;
@@ -244,7 +241,6 @@
   outline: none;
 }
 
-/* High DPI Support */
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .compassArrow {
     width: 1.5px;

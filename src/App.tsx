@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback } from 'react'
 
 import TopBar, {
   MOCK_VESSEL_DATA,
@@ -25,98 +25,38 @@ import {
 
 import { TimeController } from './components/TimeController/TimeController'
 
-import MapView, {
-  type MapRoute,
-  type VesselPosition,
-} from './components/MapView/MapView'
+import MapView from './components/MapView/MapView'
 
 import styles from './App.module.css'
 import './index.css'
 
 function App() {
-  const [layers, setLayers] =
-    useState<LayerItem[]>(MOCK_LAYERS)
+  const [layers, setLayers] = useState<LayerItem[]>(MOCK_LAYERS)
 
-  const [selectedRoute, setSelectedRoute] =
-    useState<RouteType>('BALANCED')
+  const [selectedRoute, setSelectedRoute] = useState<RouteType>('BALANCED')
 
-  const [routes, setRoutes] =
-    useState<RouteRow[]>(MOCK_ROUTES)
+  const [routes, setRoutes] = useState<RouteRow[]>(MOCK_ROUTES)
 
-  const [computedAt, setComputedAt] =
-    useState<string | null>(null)
+  const [computedAt, setComputedAt] = useState<string | null>(null)
 
-  const [forecastFrame, setForecastFrame] =
-    useState('current')
+  const [forecastFrame, setForecastFrame] = useState('current')
 
-  const [mobilePanel, setMobilePanel] =
-    useState<'layers' | 'mission' | null>(null)
-
-  const vessel: VesselPosition = useMemo(
-    () => ({
-      longitude: 45.315,
-      latitude: -70.359,
-      heading: 132.6,
-      speedKnots: 12.4,
-    }),
-    []
-  )
-
-  const mapRoutes: MapRoute[] = useMemo(
-    () => [
-      {
-        type: 'FASTEST',
-        coordinates: [
-          [45.315, -70.359],
-          [44.8, -71],
-          [44.1, -71.55],
-          [43.2, -72.05],
-          [42.4, -72.25],
-        ],
-      },
-      {
-        type: 'SAFEST',
-        coordinates: [
-          [45.315, -70.359],
-          [46.25, -70.95],
-          [46, -71.7],
-          [44.7, -72.45],
-          [42.4, -72.25],
-        ],
-      },
-      {
-        type: 'BALANCED',
-        coordinates: [
-          [45.315, -70.359],
-          [45.45, -71.12],
-          [44.85, -71.8],
-          [43.8, -72.22],
-          [42.4, -72.25],
-        ],
-      },
-    ],
-    []
-  )
+  const [mobilePanel, setMobilePanel] = useState<'layers' | 'mission' | null>(null)
 
   const handleToggle = useCallback(
     (id: string, visible: boolean) => {
       setLayers((prev) =>
         prev.map((layer) =>
-          layer.id === id
-            ? { ...layer, visible }
-            : layer
+          layer.id === id ? { ...layer, visible } : layer
         )
       )
     },
     []
   )
 
-  const handleSelect = useCallback(
-    (id: string) => {
-      console.log('selected layer:', id)
-    },
-    []
-  )
+  const handleSelect = useCallback((id: string) => {
+    console.log('selected layer:', id)
+  }, [])
 
   const handleComputeRoute = useCallback(
     (
@@ -124,8 +64,7 @@ function App() {
       _destination: string,
       weighting: number
     ) => {
-      const safetyBias =
-        (100 - weighting) / 100
+      const safetyBias = (100 - weighting) / 100
 
       setRoutes(
         MOCK_ROUTES.map((route) => ({
@@ -134,7 +73,7 @@ function App() {
             5,
             Math.round(
               (route.riskScore ?? 0) *
-                (1 - safetyBias * 0.18)
+              (1 - safetyBias * 0.18)
             )
           ),
         }))
@@ -150,8 +89,8 @@ function App() {
         weighting < 35
           ? 'SAFEST'
           : weighting > 70
-            ? 'FASTEST'
-            : 'BALANCED'
+          ? 'FASTEST'
+          : 'BALANCED'
       )
     },
     []
@@ -160,9 +99,7 @@ function App() {
   const toggleMobilePanel = useCallback(
     (panel: 'layers' | 'mission') => {
       setMobilePanel((current) =>
-        current === panel
-          ? null
-          : panel
+        current === panel ? null : panel
       )
     },
     []
@@ -170,34 +107,17 @@ function App() {
 
   return (
     <div className={styles.root}>
-
-      {/* =====================================================
-          TOP BAR
-      ===================================================== */}
-
       <header className={styles.topbar}>
         <TopBar
           data={MOCK_VESSEL_DATA}
-          onMenuClick={() =>
-            toggleMobilePanel('layers')
-          }
+          onMenuClick={() => toggleMobilePanel('layers')}
         />
       </header>
 
-
-      {/* =====================================================
-          MAIN WORKSPACE
-      ===================================================== */}
-
       <div className={styles.middle}>
-
-        {/* ================= LEFT SIDEBAR ================= */}
-
         <aside
           className={`${styles.left} ${
-            mobilePanel === 'layers'
-              ? styles.mobilePanelOpen
-              : ''
+            mobilePanel === 'layers' ? styles.mobilePanelOpen : ''
           }`}
         >
           <LayerPanel
@@ -209,51 +129,30 @@ function App() {
           />
         </aside>
 
-
-        {/* ================= CENTER + RIGHT ================= */}
-
         <div className={styles.dashboardGrid}>
-
-          {/* ================= MAP ================= */}
-
           <main className={styles.map}>
-            <MapView
-              layers={layers}
-              vessel={vessel}
-              routes={mapRoutes}
-              selectedRoute={selectedRoute}
-              forecastFrame={forecastFrame}
-            />
+            <MapView selectedRoute={selectedRoute} forecastFrame={forecastFrame} />
 
             <div className={styles.mobileControls}>
               <button
                 type="button"
-                onClick={() =>
-                  toggleMobilePanel('layers')
-                }
+                onClick={() => toggleMobilePanel('layers')}
               >
                 LAYERS
               </button>
 
               <button
                 type="button"
-                onClick={() =>
-                  toggleMobilePanel('mission')
-                }
+                onClick={() => toggleMobilePanel('mission')}
               >
                 MISSION
               </button>
             </div>
           </main>
 
-
-          {/* ================= RIGHT UPPER PANEL ================= */}
-
           <aside
             className={`${styles.right} ${
-              mobilePanel === 'mission'
-                ? styles.mobilePanelOpen
-                : ''
+              mobilePanel === 'mission' ? styles.mobilePanelOpen : ''
             }`}
           >
             <RoutePanel
@@ -267,15 +166,10 @@ function App() {
             />
           </aside>
 
-
-          {/* ================= LOWER DASHBOARD ================= */}
-
           <section className={styles.bottom}>
             <BottomPanel
               selectedForecastId={forecastFrame}
-              onForecastFrameSelect={(
-                frame: ForecastFrame
-              ) =>
+              onForecastFrameSelect={(frame: ForecastFrame) =>
                 setForecastFrame(frame.id)
               }
               routePlanner={{
@@ -286,27 +180,17 @@ function App() {
                 ],
                 iceClass: 'PC6',
                 draftM: 8.2,
-                routeComputedAt:
-                  computedAt,
+                routeComputedAt: computedAt,
               }}
-              onComputeRoute={
-                handleComputeRoute
-              }
+              onComputeRoute={handleComputeRoute}
             />
           </section>
-
         </div>
       </div>
-
-
-      {/* =====================================================
-          TIME CONTROLLER
-      ===================================================== */}
 
       <footer className={styles.time}>
         <TimeController />
       </footer>
-
     </div>
   )
 }

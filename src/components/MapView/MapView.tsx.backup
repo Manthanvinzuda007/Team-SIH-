@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, useState } from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
 import Map from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
@@ -8,14 +8,10 @@ import XYZ from 'ol/source/XYZ'
 import { Feature } from 'ol'
 import { Point, LineString, Polygon } from 'ol/geom'
 import { Style, Stroke, Fill, Circle, Text } from 'ol/style'
-import { fromLonLat, toLonLat } from 'ol/proj'
+import { fromLonLat } from 'ol/proj'
 import { register } from 'ol/proj/proj4'
 import proj4 from 'proj4'
 import styles from './MapView.module.css'
-
-// Import our new services
-import { useWeatherData, useIceThicknessData, useBathymetryData, useWaypoints } from '../../hooks/useMapData'
-import { getDepthColor } from '../../services/bathymetryService'
 
 proj4.defs('EPSG:3031', '+proj=stere +lat_0=-90 +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs')
 register(proj4)
@@ -25,9 +21,6 @@ export type RouteType = 'FASTEST' | 'SAFEST' | 'BALANCED'
 export interface MapViewProps {
   selectedRoute?: RouteType
   forecastFrame?: string
-  vesselIceClass?: string
-  vesselDraft?: number
-  onWaypointChange?: (waypoints: any[]) => void
 }
 
 const ROUTE_COLORS = {
@@ -139,69 +132,21 @@ const FAKE_DANGER_ZONES = [
   },
 ]
 
-// Fetch bounds for weather/ice-thickness/bathymetry data.
-// Kept at module scope (not inside the component) so it's a stable
-// reference across renders — recreating this object on every render
-// would retrigger the data-fetching hooks in an infinite loop.
-const MAP_BOUNDS = { minLon: 30, maxLon: 60, minLat: -75, maxLat: -65 }
-
 const MapView: React.FC<MapViewProps> = ({
   selectedRoute = 'BALANCED',
-  vesselIceClass: _vesselIceClass = 'PC6',
-  vesselDraft: _vesselDraft = 8.2,
-  onWaypointChange,
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<Map | null>(null)
 
-  // Layer sources
   const gridSourceRef = useRef<VectorSource>(new VectorSource())
   const labelsSourceRef = useRef<VectorSource>(new VectorSource())
   const vesselSourceRef = useRef<VectorSource>(new VectorSource())
   const routesSourceRef = useRef<VectorSource>(new VectorSource())
   const icebergsSourceRef = useRef<VectorSource>(new VectorSource())
   const dangerZonesSourceRef = useRef<VectorSource>(new VectorSource())
-  const iceConcentrationSourceRef = useRef<VectorSource>(new VectorSource())
+  const iceSourceRef = useRef<VectorSource>(new VectorSource())
   const currentsSourceRef = useRef<VectorSource>(new VectorSource())
 
-  // NEW: Additional layer sources for new features
-  const weatherSourceRef = useRef<VectorSource>(new VectorSource())
-  const iceThicknessSourceRef = useRef<VectorSource>(new VectorSource())
-  const bathymetrySourceRef = useRef<VectorSource>(new VectorSource())
-  const waypointsSourceRef = useRef<VectorSource>(new VectorSource())
-
-  // Layer visibility state
-  const [showWeather, setShowWeather] = useState(true)
-  const [showIceThickness, setShowIceThickness] = useState(true)
-  const [showBathymetry, setShowBathymetry] = useState(true)
-  const [showWaypoints, setShowWaypoints] = useState(true)
-
-  // Waypoint management
-  const { waypoints, addWaypoint } = useWaypoints()
-
-  const { data: weatherData } = useWeatherData({
-    bounds: MAP_BOUNDS,
-    enabled: showWeather
-  })
-
-  const { data: iceThicknessData } = useIceThicknessData({
-    bounds: MAP_BOUNDS,
-    enabled: showIceThickness
-  })
-
-  const { data: bathymetryData } = useBathymetryData({
-    bounds: MAP_BOUNDS,
-    enabled: showBathymetry
-  })
-
-  // Notify parent of waypoint changes
-  useEffect(() => {
-    if (onWaypointChange) {
-      onWaypointChange(waypoints)
-    }
-  }, [waypoints, onWaypointChange])
-
-  // Create map layers (existing code preserved)
   const createGridLines = useCallback(() => {
     const source = gridSourceRef.current
     source.clear()
@@ -253,6 +198,7 @@ const MapView: React.FC<MapViewProps> = ({
       if (label.text === 'WEDDELL SEA') {
         font = 'bold italic 14px "Courier New", monospace'
         fill = new Fill({ color: 'rgba(170,205,235,0.55)' })
+        // Canvas API has letterSpacing from Chrome 93, but we can't easily polyfill in OL text style. This uses font only.
       } else if (label.text === 'ANTARCTIC PENINSULA') {
         font = 'italic 11px "Courier New", monospace'
         fill = new Fill({ color: 'rgba(210,190,160,0.55)' })
@@ -273,9 +219,10 @@ const MapView: React.FC<MapViewProps> = ({
   }, [])
 
   const createIcePatches = useCallback(() => {
-    const source = iceConcentrationSourceRef.current
+    const source = iceSourceRef.current
     source.clear()
 
+    // Create ice concentration patches around Antarctica
     const icePatches = [
       { lon: 45, lat: -70, concentration: 0.85, radiusDeg: 3 },
       { lon: 42, lat: -71.5, concentration: 0.75, radiusDeg: 2.5 },
@@ -295,7 +242,7 @@ const MapView: React.FC<MapViewProps> = ({
 
       for (let i = 0; i <= numPoints; i++) {
         const angle = (i / numPoints) * 2 * Math.PI
-        const r = patch.radiusDeg * (0.8 + Math.random() * 0.4)
+        const r = patch.radiusDeg * (0.8 + Math.random() * 0.4) // irregular shape
         const patchLon = patch.lon + r * Math.cos(angle)
         const patchLat = patch.lat + r * Math.sin(angle)
         coords.push(fromLonLat([patchLon, patchLat], 'EPSG:3031') as [number, number])
@@ -323,13 +270,15 @@ const MapView: React.FC<MapViewProps> = ({
     const source = currentsSourceRef.current
     source.clear()
 
+    // Generate ocean current arrows - denser grid
     for (let lon = 30; lon <= 60; lon += 3) {
       for (let lat = -75; lat >= -68; lat += 2.5) {
+        // Simulate circular current pattern around Antarctica
         const centerLon = 45
         const centerLat = -71
         const dx = lon - centerLon
         const dy = lat - centerLat
-        const angle = Math.atan2(dy, dx) + Math.PI / 2
+        const angle = Math.atan2(dy, dx) + Math.PI / 2 // perpendicular for circulation
 
         const speed = 0.3 + Math.random() * 0.5
         const arrowLength = 0.8 * speed
@@ -356,11 +305,13 @@ const MapView: React.FC<MapViewProps> = ({
               color: 'rgba(200,220,240,0.35)',
               width: 1.5,
             }),
+            // Arrow head would need custom rendering, simplified here
           })
         )
 
         source.addFeature(feature)
 
+        // Add arrow head point
         const arrowHead = new Feature({
           geometry: new Point(fromLonLat([endLon, endLat], 'EPSG:3031')),
         })
@@ -490,7 +441,6 @@ const MapView: React.FC<MapViewProps> = ({
       }
 
       const fillColor = riskColors[zone.riskLevel] || riskColors.MEDIUM
-
       feature.setStyle(
         new Style({
           fill: new Fill({ color: fillColor }),
@@ -507,220 +457,6 @@ const MapView: React.FC<MapViewProps> = ({
     })
   }, [])
 
-  // NEW FEATURE 1: Create Weather Layer
-  const createWeatherLayer = useCallback(() => {
-    if (!weatherData || !showWeather) return
-
-    const source = weatherSourceRef.current
-    source.clear()
-
-    weatherData.gridPoints.forEach((point) => {
-      // Wind arrow
-      const feature = new Feature({
-        geometry: new Point(fromLonLat([point.longitude, point.latitude], 'EPSG:3031')),
-      })
-
-      const windSpeed = point.wind.speed
-      const windDir = point.wind.direction
-
-      // Color based on wind speed
-      let color = '#4a9a4a' // Green < 20kn
-      if (windSpeed > 35) color = '#ca3030' // Red > 35kn
-      else if (windSpeed > 20) color = '#ca9a30' // Yellow 20-35kn
-
-      feature.setStyle(
-        new Style({
-          text: new Text({
-            text: '→',
-            font: 'bold 16px Arial',
-            fill: new Fill({ color }),
-            rotation: (windDir * Math.PI) / 180,
-          }),
-        })
-      )
-
-      source.addFeature(feature)
-    })
-  }, [weatherData, showWeather])
-
-  // NEW FEATURE 2: Create Ice Thickness Layer
-  const createIceThicknessLayer = useCallback(() => {
-    if (!iceThicknessData || !showIceThickness) return
-
-    const source = iceThicknessSourceRef.current
-    source.clear()
-
-    // Group points into grid cells for better visualization
-    const cellSize = 1 // degrees
-    const cells: Record<string, typeof iceThicknessData.gridPoints[0][]> = {}
-
-    iceThicknessData.gridPoints.forEach((point) => {
-      const cellKey = `${Math.floor(point.longitude / cellSize)},${Math.floor(point.latitude / cellSize)}`
-      if (!cells[cellKey]) {
-        cells[cellKey] = []
-      }
-      cells[cellKey].push(point)
-    })
-
-    Object.entries(cells).forEach(([_cellKey, points]) => {
-      const avgThickness = points.reduce((sum, p) => sum + p.thickness, 0) / points.length
-      const avgLon = points.reduce((sum, p) => sum + p.longitude, 0) / points.length
-      const avgLat = points.reduce((sum, p) => sum + p.latitude, 0) / points.length
-
-      // Create cell polygon
-      const halfCell = cellSize / 2
-      const coords = [
-        fromLonLat([avgLon - halfCell, avgLat - halfCell], 'EPSG:3031'),
-        fromLonLat([avgLon + halfCell, avgLat - halfCell], 'EPSG:3031'),
-        fromLonLat([avgLon + halfCell, avgLat + halfCell], 'EPSG:3031'),
-        fromLonLat([avgLon - halfCell, avgLat + halfCell], 'EPSG:3031'),
-        fromLonLat([avgLon - halfCell, avgLat - halfCell], 'EPSG:3031'),
-      ]
-
-      const feature = new Feature({
-        geometry: new Polygon([coords as [number, number][]]),
-      })
-
-      // Color based on thickness
-      let color = 'rgba(150, 200, 255, 0.3)' // Thin ice - blue
-      if (avgThickness > 2) color = 'rgba(255, 255, 255, 0.7)' // Thick ice - white
-      else if (avgThickness > 1) color = 'rgba(200, 220, 255, 0.5)' // Medium
-
-      feature.setStyle(
-        new Style({
-          fill: new Fill({ color }),
-          stroke: new Stroke({ color: 'rgba(150, 180, 220, 0.3)', width: 1 }),
-        })
-      )
-
-      source.addFeature(feature)
-    })
-  }, [iceThicknessData, showIceThickness])
-
-  // NEW FEATURE 3: Create Bathymetry Layer
-  const createBathymetryLayer = useCallback(() => {
-    if (!bathymetryData || !showBathymetry) return
-
-    const source = bathymetrySourceRef.current
-    source.clear()
-
-    bathymetryData.contours.forEach((contour) => {
-      const coords = contour.coordinates.map((c) => fromLonLat(c, 'EPSG:3031'))
-
-      const feature = new Feature({
-        geometry: new LineString(coords as [number, number][]),
-      })
-
-      const color = getDepthColor(contour.depth)
-
-      feature.setStyle(
-        new Style({
-          stroke: new Stroke({
-            color,
-            width: 1.5,
-            lineDash: [4, 4],
-          }),
-        })
-      )
-
-      source.addFeature(feature)
-
-      // Add depth label at midpoint
-      if (coords.length > 0) {
-        const midIdx = Math.floor(coords.length / 2)
-        const labelFeature = new Feature({
-          geometry: new Point(coords[midIdx]),
-        })
-
-        labelFeature.setStyle(
-          new Style({
-            text: new Text({
-              text: `${contour.depth}m`,
-              font: '9px "Courier New", monospace',
-              fill: new Fill({ color }),
-              stroke: new Stroke({ color: '#000', width: 2 }),
-              offsetY: -8,
-            }),
-          })
-        )
-
-        source.addFeature(labelFeature)
-      }
-    })
-  }, [bathymetryData, showBathymetry])
-
-  // NEW FEATURE 4: Create Waypoints Layer
-  const createWaypointsLayer = useCallback(() => {
-    if (!showWaypoints) return
-
-    const source = waypointsSourceRef.current
-    source.clear()
-
-    waypoints.forEach((waypoint, idx) => {
-      const feature = new Feature({
-        geometry: new Point(fromLonLat([waypoint.longitude, waypoint.latitude], 'EPSG:3031')),
-      })
-
-      feature.setId(waypoint.id)
-      feature.set('waypoint', waypoint)
-
-      feature.setStyle(
-        new Style({
-          image: new Circle({
-            radius: 8,
-            fill: new Fill({ color: '#4a9acf' }),
-            stroke: new Stroke({ color: '#ffffff', width: 2 }),
-          }),
-          text: new Text({
-            text: (idx + 1).toString(),
-            font: 'bold 11px Arial',
-            fill: new Fill({ color: '#ffffff' }),
-          }),
-        })
-      )
-
-      source.addFeature(feature)
-    })
-
-    // Draw lines between waypoints
-    if (waypoints.length > 1) {
-      const coords = waypoints.map((wp) => fromLonLat([wp.longitude, wp.latitude], 'EPSG:3031'))
-      const lineFeature = new Feature({
-        geometry: new LineString(coords as [number, number][]),
-      })
-
-      lineFeature.setStyle(
-        new Style({
-          stroke: new Stroke({
-            color: '#4a9acf',
-            width: 2,
-            lineDash: [8, 4],
-          }),
-        })
-      )
-
-      source.addFeature(lineFeature)
-    }
-  }, [waypoints, showWaypoints])
-
-  // Update all layers when data changes
-  useEffect(() => {
-    createWeatherLayer()
-  }, [createWeatherLayer])
-
-  useEffect(() => {
-    createIceThicknessLayer()
-  }, [createIceThicknessLayer])
-
-  useEffect(() => {
-    createBathymetryLayer()
-  }, [createBathymetryLayer])
-
-  useEffect(() => {
-    createWaypointsLayer()
-  }, [createWaypointsLayer])
-
-  // Initialize map
   useEffect(() => {
     if (!mapContainerRef.current) return
 
@@ -731,10 +467,11 @@ const MapView: React.FC<MapViewProps> = ({
       }),
     })
 
+    
     const overlayRing = []
     for (let lon = -180; lon <= 180; lon += 10) overlayRing.push(fromLonLat([lon, -45], 'EPSG:3031'))
     for (let lon = 180; lon >= -180; lon -= 10) overlayRing.push(fromLonLat([lon, -90], 'EPSG:3031'))
-
+    
     const darkOverlayLayer = new VectorLayer({
       source: new VectorSource({
         features: [
@@ -749,58 +486,27 @@ const MapView: React.FC<MapViewProps> = ({
       zIndex: 1
     })
 
-    // Create all layers
-    const bathymetryLayer = new VectorLayer({ source: bathymetrySourceRef.current, zIndex: 2 })
-    const iceThicknessLayer = new VectorLayer({ source: iceThicknessSourceRef.current, zIndex: 3 })
-    const iceConcentrationLayer = new VectorLayer({ source: iceConcentrationSourceRef.current, zIndex: 4 })
-    const currentsLayer = new VectorLayer({ source: currentsSourceRef.current, zIndex: 5 })
-    const weatherLayer = new VectorLayer({ source: weatherSourceRef.current, zIndex: 6 })
-    const gridLayer = new VectorLayer({ source: gridSourceRef.current, zIndex: 7 })
-    const dangerZonesLayer = new VectorLayer({ source: dangerZonesSourceRef.current, zIndex: 8 })
-    const routesLayer = new VectorLayer({ source: routesSourceRef.current, zIndex: 9 })
-    const waypointsLayer = new VectorLayer({ source: waypointsSourceRef.current, zIndex: 10 })
-    const icebergsLayer = new VectorLayer({ source: icebergsSourceRef.current, zIndex: 11 })
-    const labelsLayer = new VectorLayer({ source: labelsSourceRef.current, zIndex: 12 })
-    const vesselLayer = new VectorLayer({ source: vesselSourceRef.current, zIndex: 13 })
+    const iceLayer = new VectorLayer({ source: iceSourceRef.current, zIndex: 2 })
+    const currentsLayer = new VectorLayer({ source: currentsSourceRef.current, zIndex: 3 })
+    const gridLayer = new VectorLayer({ source: gridSourceRef.current })
+    const labelsLayer = new VectorLayer({ source: labelsSourceRef.current })
+    const dangerZonesLayer = new VectorLayer({ source: dangerZonesSourceRef.current })
+    const routesLayer = new VectorLayer({ source: routesSourceRef.current })
+    const icebergsLayer = new VectorLayer({ source: icebergsSourceRef.current })
+    const vesselLayer = new VectorLayer({ source: vesselSourceRef.current })
 
     const map = new Map({
       target: mapContainerRef.current,
-      layers: [
-        baseLayer,
-        darkOverlayLayer,
-        bathymetryLayer,
-        iceThicknessLayer,
-        iceConcentrationLayer,
-        currentsLayer,
-        weatherLayer,
-        gridLayer,
-        dangerZonesLayer,
-        routesLayer,
-        waypointsLayer,
-        icebergsLayer,
-        labelsLayer,
-        vesselLayer,
-      ],
+      layers: [baseLayer, darkOverlayLayer, iceLayer, currentsLayer, gridLayer, dangerZonesLayer, routesLayer, icebergsLayer, labelsLayer, vesselLayer],
       view: new View({
         projection: 'EPSG:3031',
-        center: fromLonLat([45, -71], 'EPSG:3031'),
+        center: fromLonLat([0, -75], 'EPSG:3031'),
         zoom: 5,
       }),
     })
 
     mapRef.current = map
 
-    // Add click handler to add waypoints
-    map.on('click', (evt) => {
-      const coords = toLonLat(evt.coordinate, 'EPSG:3031')
-      addWaypoint({
-        longitude: coords[0],
-        latitude: coords[1],
-        name: `Waypoint ${waypoints.length + 1}`,
-      })
-    })
-
-    // Initialize all features
     createGridLines()
     createLabels()
     createIcePatches()
@@ -809,15 +515,11 @@ const MapView: React.FC<MapViewProps> = ({
     updateRoutes()
     updateIcebergs()
     updateDangerZones()
-    createWeatherLayer()
-    createIceThicknessLayer()
-    createBathymetryLayer()
-    createWaypointsLayer()
 
     return () => {
       map.setTarget(undefined)
     }
-  }, [])
+  }, [createGridLines, createLabels, createIcePatches, createOceanCurrents, updateVessel, updateRoutes, updateIcebergs, updateDangerZones])
 
   useEffect(() => {
     updateRoutes()
@@ -832,27 +534,6 @@ const MapView: React.FC<MapViewProps> = ({
       <div className={styles.compass}>
         <div>N</div>
         <div className={styles.compassArrow}></div>
-      </div>
-
-      {/* NEW: Layer Control Panel */}
-      <div className={styles.layerControl}>
-        <div className={styles.layerControlTitle}>MAP LAYERS</div>
-        <label className={styles.layerControlItem}>
-          <input type="checkbox" checked={showWeather} onChange={(e) => setShowWeather(e.target.checked)} />
-          <span>Weather</span>
-        </label>
-        <label className={styles.layerControlItem}>
-          <input type="checkbox" checked={showIceThickness} onChange={(e) => setShowIceThickness(e.target.checked)} />
-          <span>Ice Thickness</span>
-        </label>
-        <label className={styles.layerControlItem}>
-          <input type="checkbox" checked={showBathymetry} onChange={(e) => setShowBathymetry(e.target.checked)} />
-          <span>Bathymetry</span>
-        </label>
-        <label className={styles.layerControlItem}>
-          <input type="checkbox" checked={showWaypoints} onChange={(e) => setShowWaypoints(e.target.checked)} />
-          <span>Waypoints</span>
-        </label>
       </div>
 
       <div className={styles.legend}>

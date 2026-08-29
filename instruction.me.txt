@@ -1,0 +1,246 @@
+I am attaching 2 images:
+- Image 1: My CURRENT dashboard (what it looks like now)
+- Image 2: REFERENCE design (what I want it to look like)
+this image is also available in the folder polaris-nav. first analise the picture then do
+
+I need you to update my polaris-nav React + TypeScript + CSS Modules project 
+to match the reference design EXACTLY. Here are all the specific changes needed:
+
+════════════════════════════════════════
+1. GLOBAL COLOR SYSTEM — update index.css and all module CSS files
+════════════════════════════════════════
+
+Background colors:
+- Page root bg: #060d1a
+- Panel bg (left/right sidebar): #070c14
+- Bottom panel bg: #07101a
+- Top bar bg: #060d1a
+- Border color everywhere: #0f2035 (very subtle dark blue)
+- Section dividers: #0a1628
+
+Text colors (this is why current text is unreadable — fix all of these):
+- Section headers (LAYERS, ROUTE COMPARISON etc): #4a7090 — letter-spacing: 2-3px, font-size: 9px, UPPERCASE
+- Primary values (numbers, coordinates): #c8dce8 — bright enough to read
+- Secondary labels: #5a7890 — muted but readable  
+- Muted metadata (source, timestamp): #2a4050 — very dim
+- Active/selected items: #8ab8d0 — highlighted blue-white
+- Warning text: #7a5a10 — amber
+- Error text: #7a2020 — dark red
+- Status CURRENT: #3a7a3a — dark green
+
+Route colors:
+- FASTEST: #d4920a (golden yellow)
+- SAFEST: #2a8a4a (forest green)  
+- BALANCED: #7a8a9a (gray-blue)
+
+════════════════════════════════════════
+2. TYPOGRAPHY — apply to ALL components
+════════════════════════════════════════
+
+font-family: 'Courier New', Courier, monospace — EVERYWHERE, no exceptions
+No system-ui, no sans-serif anywhere
+
+Section titles: 9px, letter-spacing: 2.5px, color: #4a7090, UPPERCASE, font-weight: normal
+Table headers: 7px, letter-spacing: 1px, color: #2a4060, UPPERCASE
+Data values: 10-11px, color: #c8dce8
+Metadata: 9px, color: #2a4050
+Geographic labels on map: italic, 12-13px, color: rgba(170,210,240,0.55), letter-spacing: 3px
+
+════════════════════════════════════════
+3. LAYOUT — remove gaps, add borders
+════════════════════════════════════════
+
+- gap: 0 between ALL grid areas — panels must touch each other with NO space between them
+- Every panel border: 1px solid #0f2035
+- Left panel border-right: 1px solid #0f2035
+- Right panel border-left: 1px solid #0f2035  
+- Bottom panel border-top: 1px solid #0f2035
+- TimeController border-top: 1px solid #0f2035
+- TopBar border-bottom: 1px solid #0f2035
+- NO margin/padding on .root — panels must be flush to edges of screen
+
+In App.module.css:
+.root {
+  gap: 0 !important;
+  margin: 0;
+  padding: 0;
+}
+
+════════════════════════════════════════
+4. MAP (MapView.tsx + MapView.module.css) — most important
+════════════════════════════════════════
+
+The map must look DARK like the reference. Changes needed:
+
+a) ADD a dark overlay on top of the basemap:
+   After the basemap TileLayer, add a second TileLayer with no source
+   but a canvas-based solid color overlay to darken it:
+   
+   Add a VectorLayer with a single full-extent Polygon feature:
+   - Fill: rgba(5, 15, 30, 0.35) — dark navy tint overlay
+   - This goes ABOVE basemap but BELOW all other layers
+   - zIndex: 1
+
+b) ICE CONCENTRATION patches — make them MORE visible:
+   - Increase opacity: concentration * 0.65 instead of 0.42
+   - Change ice color from #b8ddf0 to #d0eaff (brighter white-blue)
+   - Increase radiusDeg by 1.5x for all patches  
+   - Add stroke: rgba(200, 235, 255, 0.3) width 1
+
+c) OCEAN CURRENT arrows — make them visible:
+   - Current arrow color: rgba(200,220,240,0.35) — must be visible
+   - Arrow radius: 4-6px depending on speed
+   - Generate MORE arrows: loop every 3° lon, every 2.5° lat (denser grid)
+
+d) GRATICULE lines:
+   - Color: rgba(255,255,255,0.18) — slightly more visible
+   - Line dash: [5, 8]
+   - Lat labels: 11px, color: rgba(200,220,240,0.65)
+
+e) DANGER ZONES (red hatched areas):
+   - Hatch color: rgba(220,50,50,0.9) — bright red lines
+   - Hatch canvas: 10x10, line from (0,10) to (10,0), lineWidth: 2
+   - Stroke: #ff4444 width 2
+   - Make zones LARGER — scale all ring coordinates outward by 1.5x from center:
+     DZ-1: ring: [[34,-62],[42,-62],[43,-66],[33,-67]]
+     DZ-2: ring: [[50,-64],[58,-63],[59,-68],[49,-69]]
+     DZ-3: ring: [[56,-67],[64,-66],[65,-72],[55,-73]]
+
+f) ROUTE LINES:
+   - FASTEST: color #f5a623, width 2.5 solid
+   - SAFEST: color #27ae60, width 2 lineDash [8,5]
+   - BALANCED: color #bdc3c7, width 2 lineDash [5,5]
+   - Selected route: width +1.5, glow effect with 8px stroke at 20% opacity behind
+
+g) ICEBERG MARKERS:
+   - Size: LARGE r=9, MEDIUM r=7, SMALL r=5, UNCONFIRMED r=7
+   - Color: rgba(220,240,255,0.90) for confirmed, rgba(255,80,80,0.75) for UNCONFIRMED
+   - SVG crosshair: circle + full crosshair lines extending 4px beyond circle
+
+h) SHIP MARKER:
+   - Yellow triangle: fill #f5c518, stroke #1a0e00 width 2
+   - radius: 11
+
+i) GEOGRAPHIC LABELS — visible on the map:
+   - 'WEDDELL SEA': lon=10, lat=-72, italic bold, 14px, letter-spacing:4px, color rgba(170,205,235,0.55)
+   - 'ANTARCTIC PENINSULA': lon=-58, lat=-68, italic, 11px, color rgba(210,190,160,0.55)
+   - Depth labels '-3000': 10px, color rgba(80,130,175,0.40)
+
+════════════════════════════════════════
+5. LAYERPANEL (LayerPanel.tsx + .css)
+════════════════════════════════════════
+
+- Background: #070c14
+- Section headers: 9px, LAYERS / LAYER INFORMATION / DATA WARNINGS
+  color: #4a7090, letter-spacing: 3px
+- Layer items: 
+  label color when checked: #9abcd0
+  label color when unchecked: #3a5060
+  source/timestamp: #1e3040 — very dim
+  checkbox border: #1a3045, checked fill: #1e3a55
+  active left border: 2px solid #2a5070
+- Layer info values: #7a9ab0
+- Layer info labels: 7px #1e3040 uppercase
+- Warning rows:
+  warning type: left-border 2px #5a4a10, title #7a6020
+  error type: left-border 2px #5a1010, title #7a2020
+  info type: left-border 2px #10305a, title #203050
+
+════════════════════════════════════════
+6. ROUTEPANEL (RoutePanel.tsx + .css)
+════════════════════════════════════════
+
+- Background: #070c14
+- ROUTE COMPARISON section:
+  Table header: 7px #2a4060 uppercase
+  FASTEST row accent: left-border 2px #8a6a10, text #c9a030
+  SAFEST row accent: left-border 2px #1a5a2a, text #3a9a4a
+  BALANCED row accent: left-border 2px #3a4a5a, text #7a8a9a
+  Selected row: bg #0a1828
+  td values: 9px #5a7a8a
+  Risk score: green if <30, amber if 30-60, red if >60
+
+- ICEBERG MONITORING section:
+  td color: #5a7890
+  UNCONFIRMED CANDIDATE: color #7a2020, small badge style
+  Selected iceberg row: bg #0a1828
+
+- WHY THIS ROUTE:
+  α β γ symbols: 14px serif italic, color #3a6a8a
+  Labels: 9px #3a5060
+  Values: 9px #5a7a8a
+  Progress bars: α=red #8a2020, β=amber #8a6020, γ=blue #2a5a8a
+
+════════════════════════════════════════
+7. BOTTOMPANEL (BottomPanel.tsx + .css)
+════════════════════════════════════════
+
+- Background: #07101a
+- SEA-ICE FORECAST mini maps: already using MiniMap component
+  forecastThumb height: 90px
+  Cell border: 1px solid #0f2035
+  Label: 8px #3a5060
+  UNAVAILABLE text: #5a1010 on bg rgba(6,10,18,0.9)
+
+- ROUTE PLANNER section:
+  Input bg: #050d18
+  Input border: 1px solid #0f2035
+  Input text: #5a7890
+  Input placeholder: #1a2a35
+  COMPUTE ROUTE button: bg #0d2035 border #1e3a5f color #3a7aaf
+  On hover: bg #142840 color #5a9acf
+
+════════════════════════════════════════
+8. TOPBAR (TopBar.tsx + .css) 
+════════════════════════════════════════
+
+- Background: #060d1a
+- Border-bottom: 1px solid #0f2035
+- POLARIS text: 16px bold, color #c8dce8, letter-spacing: 3px
+- NAVIGATION SUITE: 8px, #2a4060, letter-spacing: 2px
+- Vessel divider: 1px solid #0f2035
+- Vessel name RV AURORA: 13px #a0bcd0
+- Ice Class: 10px #3a5060
+- Coordinate labels LAT/LON: 8px #2a4060
+- Coordinate values: 11px #9abcd0 monospace
+- UTC label: 8px #2a4060
+- UTC time: 18px bold #c8dce8 — this is the big clock
+- HDG/SPD labels: 8px #2a4060
+- HDG/SPD values: 14px #9abcd0
+- DATA FRESHNESS label: 8px #2a4060
+- CURRENT text: 10px #3a7a3a
+- Green pulse dot: 6px #3a9a3a, pulse animation rgba(58,154,58,0.4)
+- DATA SOURCES: 8px #1e3040
+- Source values: 9px #2a4060
+- MENU button: bg #070c14 border #1a3050 color #3a5060
+
+════════════════════════════════════════
+9. TIMECONTROLLER (TimeController.tsx + .css)
+════════════════════════════════════════
+
+- Background: #07101a
+- Border-top: 1px solid #0f2035
+- Transport buttons: bg #050d18 border #0f2035 color #4a6a7a
+- Play button: bg #0d2035 color #6a9abf
+- Timeline slots:
+  Default label: 9px #5a7890
+  AVAILABLE: 7px #2a6a3a
+  NO DATA: 7px #7a2020
+  Active slot: border-top 2px #3a7a5a, dot #3a9a5a, bg rgba(58,122,90,0.08)
+- NOW button: bg #0d2035 border #1e3a5f color #3a7aaf
+
+════════════════════════════════════════
+INSTRUCTIONS FOR COPILOT:
+════════════════════════════════════════
+
+1. Update EVERY CSS module file with the colors above
+2. The map dark overlay is the most critical change — it makes the whole 
+   UI look professional
+3. Do NOT change any TypeScript interfaces or mock data
+4. Do NOT change any layout grid (App.module.css grid-template-areas)
+5. Do NOT change component logic — only visual CSS
+6. All changes must be in CSS modules, not inline styles
+7. Make sure gap: 0 is applied in App.module.css root so panels touch
+8. The result must look like Image 2 — dark, military-grade maritime UI
+
+Please make all these changes now.
