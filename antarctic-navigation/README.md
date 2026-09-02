@@ -1,4 +1,4 @@
-# POLARIS: AI-Enabled Antarctic Navigation Decision Support System
+# IAVNS: AI-Enabled Antarctic Navigation Decision Support System
 
 This repository contains the backend and frontend for the POLARIS project, developed for the Smart India Hackathon (Problem Statement PS-26059).
 
