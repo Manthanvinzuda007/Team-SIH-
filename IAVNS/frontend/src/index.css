@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Leaflet + Tailwind compatibility ─────────────────────────────────────── */
+/* Tailwind preflight sets img { max-width: 100% } which breaks Leaflet tiles.  */
+/* leaflet/dist/leaflet.css is imported first in main.tsx; these are post-fixes. */
+.leaflet-container img.leaflet-tile {
+  max-width: none !important;
+  max-height: none !important;
+}
+.leaflet-container {
+  background: #060f1e;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-950 text-slate-300 font-sans antialiased overflow-hidden;
+  }
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: #0f172a; }
+  ::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: #0ea5e9; }
+}
+
+@layer components {
+  .leaflet-container {
+    background: #060f1e;
+  }
+  
+  /* Premium glow effects */
+  .glow-sky { box-shadow: 0 0 12px rgba(14, 165, 233, 0.3); }
+  .glow-sky-sm { box-shadow: 0 0 6px rgba(14, 165, 233, 0.2); }
+  .glow-danger { box-shadow: 0 0 12px rgba(239, 68, 68, 0.3); }
+  .glow-saffron { box-shadow: 0 0 12px rgba(251, 146, 60, 0.3); }
+  
+  /* India-inspired gradient utility */
+  .india-gradient {
+    background: linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%);
+  }
+  
+  /* IAVNS header brand */
+  .iavns-brand {
+    background: linear-gradient(90deg, #0ea5e9, #38bdf8, #7dd3fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Demo mode badge pulse */
+  .demo-pulse {
+    animation: pulse-demo 2s ease-in-out infinite;
+  }
+  
+  /* Status indicator dot */
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: blink 2s step-end infinite;
+  }
+  
+  /* Shimmer loading effect */
+  .shimmer {
+    background: linear-gradient(90deg, #0f172a 25%, #1e293b 50%, #0f172a 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+@keyframes pulse-demo {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes slide-up {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-slide-up { animation: slide-up 0.3s ease-out; }
+.animate-fade-in { animation: fade-in 0.3s ease-out; }
+
+html, body, #root {
+  height: 100vh;
+  width: 100vw;
+}
+
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+.font-sans { font-family: 'Inter', sans-serif; }
+.font-display { font-family: 'Rajdhani', sans-serif; }
