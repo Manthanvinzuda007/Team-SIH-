@@ -1,13 +1,13 @@
 import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import {
-  Activity, Anchor, Navigation, Thermometer, Layers, AlertTriangle, Wifi, WifiOff,
-  Crosshair, MapPin, Info, Gauge, SlidersHorizontal, Menu, X, ChevronRight,
-  Sliders, Eye, Compass, ShieldAlert, CheckCircle2, ChevronUp, ChevronDown
+  Activity, Anchor, Navigation, Layers,
+  Crosshair, MapPin, SlidersHorizontal, Menu, X,
+  Eye, Gauge, ChevronUp, ChevronDown
 } from 'lucide-react';
 
 import AntarcticMap, { LayerKey, PickMode, IcebergPoint, PredictedTrack } from './components/Map';
 import { usePollingApi } from './hooks/useApi';
-import { useDemoPollingApi, getDemoRoutes } from './hooks/useDemoApi';
+import { useDemoPollingApi, getDemoRoutes, getDemoData } from './hooks/useDemoApi';
 
 type RouteMode = 'FASTEST' | 'SAFEST' | 'BALANCED' | 'CUSTOM';
 const FORECAST_HORIZONS = [24, 72, 168] as const;
@@ -20,17 +20,6 @@ const RISK_COMPONENTS: Array<{ key: string; label: string; availabilityKey?: str
   { key: 'bathymetry', label: 'Bathymetry', availabilityKey: 'bathymetry' },
   { key: 'current', label: 'Current', availabilityKey: 'ocean_currents' },
 ];
-
-function friendlyApiError(label: string, err: Error | null): string | null {
-  if (!err) return null;
-  if (/503/.test(err.message)) {
-    return `${label} unavailable. Route remains available using the latest valid state.`;
-  }
-  if (/404/.test(err.message)) {
-    return `${label} not found.`;
-  }
-  return `${label} unavailable — ${err.message}`;
-}
 
 function DataChip({ label, value, tone }: { label: string; value: string; tone: 'ok' | 'warn' | 'bad' | 'muted' }) {
   const toneClass = {
@@ -46,34 +35,14 @@ function DataChip({ label, value, tone }: { label: string; value: string; tone: 
   );
 }
 
-function LoadingDots({ text }: { text: string }) {
-  return (
-    <div className="p-3 text-xs font-mono text-slate-400 flex items-center space-x-2">
-      <div className="flex space-x-1">
-        <div className="w-1.5 h-1.5 bg-sky-400 rounded-full animate-bounce" style={{animationDelay:'0ms'}} />
-        <div className="w-1.5 h-1.5 bg-sky-400 rounded-full animate-bounce" style={{animationDelay:'150ms'}} />
-        <div className="w-1.5 h-1.5 bg-sky-400 rounded-full animate-bounce" style={{animationDelay:'300ms'}} />
-      </div>
-      <span>{text}</span>
-    </div>
-  );
-}
-
 function App() {
-  const [demoMode, setDemoMode] = useState(false);
+  const [demoMode, setDemoMode] = useState(true);
   const healthFailureCount = useRef(0);
 
   // Layout UI State (Google Maps Style Drawer & Floating Popups)
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [menuTab, setMenuTab] = useState<'layers' | 'route' | 'vessel' | 'status'>('layers');
   const [showRiskDetails, setShowRiskDetails] = useState(false);
-
-  // Live UTC clock
-  const [currentTime, setCurrentTime] = useState(new Date().toISOString());
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date().toISOString()), 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   const [layers, setLayers] = useState<Record<LayerKey, boolean>>({
     seaIce: true,
@@ -90,7 +59,6 @@ function App() {
   const [origin, setOrigin] = useState({ lat: -63.5, lon: -60.0 });
   const [dest, setDest] = useState({ lat: -68.0, lon: -40.0 });
   const [pickMode, setPickMode] = useState<PickMode>(null);
-  const [iceForecastHour, setIceForecastHour] = useState(24);
   const [forecastHorizon, setForecastHorizon] = useState<ForecastHorizon>(24);
 
   const [routeMode, setRouteMode] = useState<RouteMode>('BALANCED');
@@ -123,8 +91,6 @@ function App() {
   const demoRisk        = useDemoPollingApi<any>(`/risk-map?forecast_horizon_hours=${forecastHorizon}`, 120000);
   const liveIce         = usePollingApi<any>('/sea-ice/current', 120000);
   const demoIce         = useDemoPollingApi<any>('/sea-ice/current', 120000);
-  const liveForecast    = usePollingApi<any>(`/sea-ice/forecast?hours=${[6,12,18,24,30,36,42,48].join(',')}`, 120000);
-  const demoForecast    = useDemoPollingApi<any>(`/sea-ice/forecast?hours=${[6,12,18,24,30,36,42,48].join(',')}`, 120000);
   const liveOcean       = usePollingApi<any>('/ocean?subsample=10', 120000);
   const demoOcean       = useDemoPollingApi<any>('/ocean?subsample=10', 120000);
   const liveWeather     = usePollingApi<any>('/weather', 120000);
@@ -135,16 +101,15 @@ function App() {
   const pick = <T,>(live: { data: T | null; isLoading: boolean; error: Error | null }, demo: { data: T | null; isLoading: boolean; error: Error | null }) =>
     demoMode ? demo : live;
 
-  const { data: icebergsRaw, isLoading: icebergsLoading, error: icebergsError } = pick(liveIcebergs, demoIcebergs);
-  const { data: statusData }                                                     = pick(liveStatus, demoStatus);
-  const { data: healthData, error: healthError }                                 = pick(liveHealth, demoHealth);
-  const { data: mlStatus, error: mlError }                                       = pick(liveMl, demoMl);
-  const { data: riskData, error: riskError }                                     = pick(liveRisk, demoRisk);
-  const { data: iceData, error: iceError }                                       = pick(liveIce, demoIce);
-  const { data: forecastData }                                                   = pick(liveForecast, demoForecast);
-  const { data: oceanData, error: oceanError }                                   = pick(liveOcean, demoOcean);
-  const { data: weatherData, error: weatherError }                               = pick(liveWeather, demoWeather);
-  const { data: bathyData, error: bathyError }                                   = pick(liveBathy, demoBathy);
+  const { data: icebergsRaw }   = pick(liveIcebergs, demoIcebergs);
+  const { data: statusData }    = pick(liveStatus, demoStatus);
+  const { error: healthError }  = pick(liveHealth, demoHealth);
+  const { data: mlStatus }      = pick(liveMl, demoMl);
+  const { data: riskData }      = pick(liveRisk, demoRisk);
+  const { data: iceData }       = pick(liveIce, demoIce);
+  const { data: oceanData }     = pick(liveOcean, demoOcean);
+  const { data: weatherData }   = pick(liveWeather, demoWeather);
+  const { data: bathyData }     = pick(liveBathy, demoBathy);
 
   useEffect(() => {
     if (healthError) {
@@ -157,23 +122,21 @@ function App() {
     }
   }, [healthError, demoMode]);
 
-  const isOffline = !!healthError;
-  const isPipelineReady = !!(iceData || riskData);
-
   // Route computation
   const [routes, setRoutes] = useState<any[]>([]);
   const [routing, setRouting] = useState(false);
-  const [routeError, setRouteError] = useState<string | null>(null);
 
   const computeRoute = useCallback(async () => {
     setRouting(true);
-    setRouteError(null);
     try {
       if (demoMode) {
-        await new Promise(r => setTimeout(r, 1500));
-        const data = getDemoRoutes();
-        setRoutes(data.routes || []);
-        setActiveRouteMode('BALANCED');
+        await new Promise(r => setTimeout(r, 400));
+        const data = getDemoRoutes(origin, dest);
+        const gotRoutes = data.routes || [];
+        setRoutes(gotRoutes);
+        setActiveRouteMode(
+          gotRoutes.find((r: any) => r.mode === routeMode)?.mode || gotRoutes[0]?.mode || 'BALANCED'
+        );
       } else {
         const body: Record<string, any> = {
           origin,
@@ -209,12 +172,8 @@ function App() {
         setActiveRouteMode(
           gotRoutes.find((r: any) => r.mode === routeMode)?.mode || gotRoutes[0]?.mode || null
         );
-        if (gotRoutes.length > 0 && gotRoutes.every((r: any) => r.fallback)) {
-          setRouteError('No safe route found for the selected vessel and constraints. Showing fallback geodesic route(s) only.');
-        }
       }
-    } catch (e: any) {
-      setRouteError(e.message || 'Route computation failed');
+    } catch {
       setRoutes([]);
     } finally {
       setRouting(false);
@@ -237,9 +196,9 @@ function App() {
     trajectoryLoading.current.add(id);
     try {
       if (demoMode) {
-        await new Promise(r => setTimeout(r, 600));
-        const data = await import('./data/demoData').then(m => m.DEMO_TRAJECTORY_1);
-        if (id === 1) setTrajectoryCache(prev => ({ ...prev, [id]: data }));
+        await new Promise(r => setTimeout(r, 200));
+        const data = getDemoData(`/icebergs/${id}/trajectory`);
+        if (data) setTrajectoryCache(prev => ({ ...prev, [id]: data }));
         return;
       }
       const res = await fetch(`/api/icebergs/${id}/trajectory`);
@@ -268,22 +227,17 @@ function App() {
     return trajectoryCache[selectedIceberg.id] || null;
   }, [selectedIceberg, trajectoryCache]);
 
-  const predictedTracks = useMemo(() => {
+  const predictedTracks: PredictedTrack[] = useMemo(() => {
     if (!layers.predictedIcebergs || !activeTrajectory?.predicted_points) return [];
     return [{
       iceberg_id: activeTrajectory.iceberg_id,
-      predicted_points: activeTrajectory.predicted_points,
+      origin: activeTrajectory.historical_points?.[activeTrajectory.historical_points.length - 1] || origin,
+      points: activeTrajectory.predicted_points || [],
+      confidence_corridor_km: activeTrajectory.confidence_corridor_km || null,
     }];
-  }, [layers.predictedIcebergs, activeTrajectory]);
+  }, [layers.predictedIcebergs, activeTrajectory, origin]);
 
   const datasets = useMemo(() => statusData?.datasets || [], [statusData]);
-  const backtest = useMemo(() => iceData?.forecast_backtest || null, [iceData]);
-  const fc = useMemo(() => {
-    const fcs = forecastData?.forecasts || [];
-    return fcs.find((f: any) => f.forecast_hour === iceForecastHour) || null;
-  }, [forecastData, iceForecastHour]);
-
-  const fcUnavailable = !fc || fc.status !== 'AVAILABLE';
 
   const iceOverlay = useMemo(() => {
     if (!iceData?.overlay) return null;

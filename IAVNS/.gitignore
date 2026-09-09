@@ -1,0 +1,15 @@
+# Python / Virtual Environment
+.venv/
+__pycache__/
+*.pyc
+
+# Heavy Datasets & Database Files (Not needed for Vercel static frontend)
+backend/DataSets/
+*.db
+
+# Frontend Build & Node Modules
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+*.log
+.DS_Store

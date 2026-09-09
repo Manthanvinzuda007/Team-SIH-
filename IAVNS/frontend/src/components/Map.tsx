@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Polyline, Popup, Marker, ImageOverlay, useMapEvents, useMap, Rectangle } from 'react-leaflet';
+import { MapContainer, TileLayer, CircleMarker, Polyline, Popup, Marker, ImageOverlay, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 
 // Leaflet default CRS is EPSG:3857 (Web Mercator). There is no polar-stereo tile
@@ -72,7 +72,7 @@ interface Overlay {
 interface AntarcticMapProps {
   icebergs?: IcebergPoint[];
   predictedTracks?: PredictedTrack[];
-  routes?: Array<{ mode: string; path_points: Array<{ lat: number; lon: number }>; fallback?: boolean }>;
+  routes?: Array<{ mode: string; path_points: Array<{ lat: number; lon: number }>; fallback?: boolean; distance_nm?: number; estimated_time_hours?: number; safety_score?: number; risk_score?: number }>;
   activeRouteMode?: string | null;
   layers: Record<LayerKey, boolean>;
   iceOverlay?: Overlay | null;
@@ -455,9 +455,9 @@ export default function AntarcticMap({
 
         {/* Current speed legend */}
         {layers.currents && oceanHint && oceanHint.length > 0 && (
-          <div className="leaflet-bottom leaflet-left" style={{ position: 'absolute', bottom: 10, left: 10, zIndex: 1000 }}>
-            <div style={{ background: 'rgba(15,23,42,0.85)', padding: '6px 10px', borderRadius: 4, fontSize: 10, fontFamily: 'monospace', color: '#94a3b8' }}>
-              <div style={{ fontWeight: 'bold', marginBottom: 3 }}>CURRENT SPEED</div>
+          <div className="leaflet-top leaflet-right" style={{ position: 'absolute', top: 12, right: 12, zIndex: 1000 }}>
+            <div style={{ background: 'rgba(15,23,42,0.9)', padding: '8px 12px', borderRadius: 8, fontSize: 10, fontFamily: 'monospace', color: '#94a3b8', border: '1px solid rgba(51,65,85,0.8)', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.3)' }}>
+              <div style={{ fontWeight: 'bold', marginBottom: 3, color: '#f1f5f9' }}>CURRENT SPEED</div>
               <div><span style={{ color: '#3b82f6' }}>━</span> &lt;0.1 kn</div>
               <div><span style={{ color: '#06b6d4' }}>━</span> 0.1–0.3 kn</div>
               <div><span style={{ color: '#eab308' }}>━</span> 0.3–0.6 kn</div>
