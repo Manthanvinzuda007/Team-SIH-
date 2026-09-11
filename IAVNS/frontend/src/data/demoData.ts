@@ -16,6 +16,7 @@ export const DEMO_DATA_STATUS = extractedData.data_status;
 export const DEMO_ML_STATUS = extractedData.ml_status;
 export const DEMO_ROUTES = extractedData.routes;
 export const DEMO_TRAJECTORIES = extractedData.trajectories as Record<string, any>;
+export const ALL_DEMO_TRAJECTORIES = Object.values(DEMO_TRAJECTORIES);
 export const DEMO_TRAJECTORY_1 = DEMO_TRAJECTORIES["1"] || DEMO_TRAJECTORIES[Object.keys(DEMO_TRAJECTORIES)[0]];
 
 function generateCurvedPath(waypoints: Array<{ lat: number; lon: number }>, stepsPerSegment: number = 8) {

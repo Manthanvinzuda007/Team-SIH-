@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   DEMO_HEALTH, DEMO_ICEBERGS, DEMO_RISK_MAP, DEMO_SEA_ICE,
   DEMO_WEATHER, DEMO_BATHYMETRY, DEMO_OCEAN, DEMO_DATA_STATUS, DEMO_ML_STATUS,
-  DEMO_ROUTES, DEMO_FORECAST, DEMO_TRAJECTORIES, DEMO_TRAJECTORY_1,
+  DEMO_ROUTES, DEMO_FORECAST, DEMO_TRAJECTORIES, ALL_DEMO_TRAJECTORIES, DEMO_TRAJECTORY_1,
   getDemoRoutes as calcDemoRoutes
 } from '../data/demoData';
 
@@ -20,6 +20,9 @@ const DEMO_DATA_MAP: Record<string, any> = {
 };
 
 export function getDemoData(endpoint: string): any {
+  if (endpoint.includes('/trajectories/all')) {
+    return ALL_DEMO_TRAJECTORIES;
+  }
   for (const key of Object.keys(DEMO_DATA_MAP)) {
     if (endpoint.startsWith(key) || endpoint.startsWith('/api' + key)) {
       return DEMO_DATA_MAP[key];
