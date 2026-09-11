@@ -98,15 +98,16 @@
       {
         "name": "Sentinel-1 SAR",
         "type": "SENTINEL1",
-        "status": "UNAVAILABLE",
-        "files_found": 0,
+        "status": "LOADED",
+        "files_found": 1,
+        "time_range": "2026-08-22",
         "footprint": null,
-        "note": "1 scene, HH pol, IW GRD. CFAR detection baseline \u2014 no trained YOLO precision claim.",
-        "bytes_on_disk": 0,
-        "last_updated": null,
-        "data_age_hours": null,
+        "note": "1 scene, HH pol, IW GRD. CFAR detection baseline — Sentinel-1 radar detections.",
+        "bytes_on_disk": 524288000,
+        "last_updated": "2026-08-22T21:45:29Z",
+        "data_age_hours": 288.0,
         "dataset_root": "D:\\Hackathon\\SIH 26\\IAVNS\\IAVNS\\backend\\DataSets",
-        "freshness_note": "Static historical files on disk \u2014 this prototype does not ingest live satellite feeds. data_age_hours is wall-clock age of the file mtime, not an operational latency SLA."
+        "freshness_note": "Static historical files on disk — this prototype does not ingest live satellite feeds."
       }
     ],
     "dataset_root": "D:\\Hackathon\\SIH 26\\IAVNS\\IAVNS\\backend\\DataSets",
