@@ -48,7 +48,7 @@ function App() {
     seaIce: true,
     referenceIcebergs: true,
     sarCandidates: true,
-    predictedIcebergs: false,
+    predictedIcebergs: true,
     risk: true,
     route: true,
     currents: false,
@@ -227,15 +227,31 @@ function App() {
     return trajectoryCache[selectedIceberg.id] || null;
   }, [selectedIceberg, trajectoryCache]);
 
+  const demoAllTraj     = useDemoPollingApi<any[]>('/trajectories/all', 120000);
+  const { data: allTrajData } = demoAllTraj;
+
   const predictedTracks: PredictedTrack[] = useMemo(() => {
-    if (!layers.predictedIcebergs || !activeTrajectory?.predicted_points) return [];
-    return [{
-      iceberg_id: activeTrajectory.iceberg_id,
-      origin: activeTrajectory.historical_points?.[activeTrajectory.historical_points.length - 1] || origin,
-      points: activeTrajectory.predicted_points || [],
-      confidence_corridor_km: activeTrajectory.confidence_corridor_km || null,
-    }];
-  }, [layers.predictedIcebergs, activeTrajectory, origin]);
+    if (!layers.predictedIcebergs) return [];
+    if (activeTrajectory?.predicted_points) {
+      const lastHist = activeTrajectory.historical_points?.[activeTrajectory.historical_points.length - 1];
+      return [{
+        iceberg_id: activeTrajectory.iceberg_id,
+        origin: lastHist ? { lat: lastHist.lat, lon: lastHist.lon } : { lat: activeTrajectory.predicted_points[0]?.lat || 0, lon: activeTrajectory.predicted_points[0]?.lon || 0 },
+        points: activeTrajectory.predicted_points || [],
+        confidence_corridor_km: activeTrajectory.confidence_corridor_km || null,
+      }];
+    }
+    const list = Array.isArray(allTrajData) ? allTrajData : [];
+    return list.slice(0, 30).map((t: any) => {
+      const lastHist = t.historical_points?.[t.historical_points.length - 1];
+      return {
+        iceberg_id: t.iceberg_id,
+        origin: lastHist ? { lat: lastHist.lat, lon: lastHist.lon } : { lat: t.predicted_points?.[0]?.lat || 0, lon: t.predicted_points?.[0]?.lon || 0 },
+        points: t.predicted_points || [],
+        confidence_corridor_km: t.confidence_corridor_km || null,
+      };
+    });
+  }, [layers.predictedIcebergs, activeTrajectory, allTrajData]);
 
   const datasets = useMemo(() => statusData?.datasets || [], [statusData]);
 
